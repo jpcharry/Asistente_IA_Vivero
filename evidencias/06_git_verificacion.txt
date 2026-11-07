@@ -1,0 +1,8 @@
+Revisión del historial Git del proyecto Semana 5
+
+93b10a4 test: registrar pruebas HU-03 en rojo
+7f877f0 feat: clasificar incidencias y pasar pruebas HU-03
+cdedb58 refactor: simplificar normalizacion de categorias
+
+Diferencias de archivos de pruebas respecto al primer commit:
+(sin diferencias; se conservaron las pruebas)
