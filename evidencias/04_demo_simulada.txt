@@ -1,0 +1,5 @@
+Tipo de prueba: DEMOSTRACIÓN SIMULADA (sin modelo de IA real)
+Incidencia: INC-001
+Categoría sugerida: Inventario
+Estado: PENDIENTE_REVISION
+Resultado: Categoría sugerida; pendiente de revisión

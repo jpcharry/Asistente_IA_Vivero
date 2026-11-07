@@ -1,0 +1,380 @@
+FFFFFFFFFFFFFF                                                           [100%]
+=================================== FAILURES ===================================
+________ test_normal_inventario_guarda_sugerencia_y_conserva_pendiente _________
+
+    def test_normal_inventario_guarda_sugerencia_y_conserva_pendiente():
+        incidencias = reporte()
+>       resultado = clasificar_incidencia(incidencias, "INC-001", lambda _: "Inventario")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_clasificador.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-001': Incidencia(codigo='INC-001', descripcion='El sistema muestra 60 plantas y hay 48', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-001'
+servicio_ia = <function test_normal_inventario_guarda_sugerencia_y_conserva_pendiente.<locals>.<lambda> at 0x7fe0423b0680>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+_____________ test_normal_interfaz_guarda_categoria_del_proveedor ______________
+
+    def test_normal_interfaz_guarda_categoria_del_proveedor():
+        incidencias = reporte("INC-002", "No carga la pantalla de registrar ventas")
+>       resultado = clasificar_incidencia(incidencias, "INC-002", lambda _: "Interfaz")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_clasificador.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-002': Incidencia(codigo='INC-002', descripcion='No carga la pantalla de registrar ventas', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-002'
+servicio_ia = <function test_normal_interfaz_guarda_categoria_del_proveedor.<locals>.<lambda> at 0x7fe042e23600>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+_____________ test_normal_ventas_y_normaliza_espacios_y_mayusculas _____________
+
+    def test_normal_ventas_y_normaliza_espacios_y_mayusculas():
+        incidencias = reporte("INC-004", "No se puede registrar la venta")
+>       resultado = clasificar_incidencia(incidencias, "INC-004", lambda _: "  vEnTaS  ")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_clasificador.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-004': Incidencia(codigo='INC-004', descripcion='No se puede registrar la venta', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-004'
+servicio_ia = <function test_normal_ventas_y_normaliza_espacios_y_mayusculas.<locals>.<lambda> at 0x7fe0423b1620>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+__________ test_limite_categoria_otro_es_valida_y_no_se_reinterpreta ___________
+
+    def test_limite_categoria_otro_es_valida_y_no_se_reinterpreta():
+        incidencias = reporte("INC-005", "No encuentro la opción del reporte")
+>       resultado = clasificar_incidencia(incidencias, "INC-005", lambda _: "Otro")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_clasificador.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-005': Incidencia(codigo='INC-005', descripcion='No encuentro la opción del reporte', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-005'
+servicio_ia = <function test_limite_categoria_otro_es_valida_y_no_se_reinterpreta.<locals>.<lambda> at 0x7fe0423b19e0>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+______________ test_limite_descripcion_de_500_caracteres_aceptada ______________
+
+    def test_limite_descripcion_de_500_caracteres_aceptada():
+        incidencias = reporte("INC-006", "a" * 500)
+        recibido = []
+    
+        def ia(texto):
+            recibido.append(texto)
+            return "Inventario"
+    
+>       clasificar_incidencia(incidencias, "INC-006", ia)
+
+tests/test_clasificador.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-006': Incidencia(codigo='INC-006', descripcion='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-006'
+servicio_ia = <function test_limite_descripcion_de_500_caracteres_aceptada.<locals>.ia at 0x7fe0423b1da0>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+______ test_limite_descripcion_de_501_caracteres_rechazada_sin_llamar_ia _______
+
+    def test_limite_descripcion_de_501_caracteres_rechazada_sin_llamar_ia():
+        incidencias = reporte("INC-007", "a" * 501)
+        llamadas = []
+        with pytest.raises(ValueError, match="1 y 500"):
+>           clasificar_incidencia(incidencias, "INC-007", lambda txt: llamadas.append(txt))
+
+tests/test_clasificador.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-007': Incidencia(codigo='INC-007', descripcion='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-007'
+servicio_ia = <function test_limite_descripcion_de_501_caracteres_rechazada_sin_llamar_ia.<locals>.<lambda> at 0x7fe0423b1f80>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+______ test_error_proveedor_no_disponible_conserva_reporte_sin_categoria _______
+
+    def test_error_proveedor_no_disponible_conserva_reporte_sin_categoria():
+        incidencias = reporte("INC-003", "No registra la salida de un lote")
+        anterior = incidencias["INC-003"]
+    
+        def ia_no_disponible(_):
+            raise TimeoutError("Servidor externo agotó el tiempo")
+    
+>       resultado = clasificar_incidencia(incidencias, "INC-003", ia_no_disponible)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_clasificador.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-003': Incidencia(codigo='INC-003', descripcion='No registra la salida de un lote', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-003'
+servicio_ia = <function test_error_proveedor_no_disponible_conserva_reporte_sin_categoria.<locals>.ia_no_disponible at 0x7fe0423b20c0>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+____ test_error_categoria_invalida_se_rechaza_en_vez_de_convertirla_a_otro _____
+
+    def test_error_categoria_invalida_se_rechaza_en_vez_de_convertirla_a_otro():
+        incidencias = reporte()
+>       resultado = clasificar_incidencia(incidencias, "INC-001", lambda _: "Urgente")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_clasificador.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-001': Incidencia(codigo='INC-001', descripcion='El sistema muestra 60 plantas y hay 48', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-001'
+servicio_ia = <function test_error_categoria_invalida_se_rechaza_en_vez_de_convertirla_a_otro.<locals>.<lambda> at 0x7fe0423b2520>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+_____________ test_error_incidencia_inexistente_no_llama_al_modelo _____________
+
+    def test_error_incidencia_inexistente_no_llama_al_modelo():
+        incidencias = reporte()
+        llamadas = []
+        with pytest.raises(KeyError):
+>           clasificar_incidencia(incidencias, "INC-999", lambda txt: llamadas.append(txt))
+
+tests/test_clasificador.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-001': Incidencia(codigo='INC-001', descripcion='El sistema muestra 60 plantas y hay 48', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-999'
+servicio_ia = <function test_error_incidencia_inexistente_no_llama_al_modelo.<locals>.<lambda> at 0x7fe0423b28e0>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+_______________ test_error_descripcion_vacia_no_llama_al_modelo ________________
+
+    def test_error_descripcion_vacia_no_llama_al_modelo():
+        incidencias = reporte("INC-010", "   ")
+        llamadas = []
+        with pytest.raises(ValueError, match="1 y 500"):
+>           clasificar_incidencia(incidencias, "INC-010", lambda txt: llamadas.append(txt))
+
+tests/test_clasificador.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-010': Incidencia(codigo='INC-010', descripcion='   ', categoria_sugerida=None, estado='PENDIENTE_REVISION')}
+codigo = 'INC-010'
+servicio_ia = <function test_error_descripcion_vacia_no_llama_al_modelo.<locals>.<lambda> at 0x7fe0423b2ca0>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+_________ test_reclasificacion_fallida_no_borra_categoria_ya_guardada __________
+
+    def test_reclasificacion_fallida_no_borra_categoria_ya_guardada():
+        incidencia = Incidencia("INC-012", "Faltan plantas", "Inventario")
+        incidencias = {"INC-012": incidencia}
+    
+        def ia_no_disponible(_):
+            raise ConnectionError("Sin red")
+    
+>       resultado = clasificar_incidencia(incidencias, "INC-012", ia_no_disponible)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_clasificador.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+incidencias = {'INC-012': Incidencia(codigo='INC-012', descripcion='Faltan plantas', categoria_sugerida='Inventario', estado='PENDIENTE_REVISION')}
+codigo = 'INC-012'
+servicio_ia = <function test_reclasificacion_fallida_no_borra_categoria_ya_guardada.<locals>.ia_no_disponible at 0x7fe0423b14e0>
+
+    def clasificar_incidencia(
+        incidencias: dict[str, Incidencia],
+        codigo: str,
+        servicio_ia: Callable[[str], str],
+    ) -> ResultadoClasificacion:
+        """Implementación pendiente: las pruebas deben fallar antes de programarla."""
+>       raise NotImplementedError("Primero se escriben las pruebas (TDD rojo)")
+E       NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+
+app/clasificador.py:31: NotImplementedError
+_____________ test_adaptador_extrae_categoria_de_respuesta_openai ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fe042392d70>
+
+    def test_adaptador_extrae_categoria_de_respuesta_openai(monkeypatch):
+        import app.proveedor_openai as modulo
+        peticiones = []
+    
+        def urlopen_simulado(peticion, timeout):
+            peticiones.append((peticion, timeout))
+            return BytesIO(json.dumps({
+                "output": [{"type": "message", "content": [{"type": "output_text", "text": "Inventario"}]}]
+            }).encode())
+    
+        monkeypatch.setattr(modulo, "urlopen", urlopen_simulado, raising=False)
+        proveedor = ProveedorOpenAI("clave_de_ejemplo", model="modelo-prueba")
+>       assert proveedor("Las existencias no coinciden") == "Inventario"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_proveedor_openai.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <app.proveedor_openai.ProveedorOpenAI object at 0x7fe0423add30>
+descripcion = 'Las existencias no coinciden'
+
+    def __call__(self, descripcion: str) -> str:
+>       raise NotImplementedError("Se implementa después de las pruebas")
+E       NotImplementedError: Se implementa después de las pruebas
+
+app/proveedor_openai.py:13: NotImplementedError
+__________________ test_adaptador_rechaza_respuesta_sin_texto __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fe042392fd0>
+
+    def test_adaptador_rechaza_respuesta_sin_texto(monkeypatch):
+        import app.proveedor_openai as modulo
+        monkeypatch.setattr(modulo, "urlopen", lambda peticion, timeout: BytesIO(b'{"output":[]}'), raising=False)
+        proveedor = ProveedorOpenAI("clave_de_ejemplo")
+        with pytest.raises(ErrorProveedorIA):
+>           proveedor("Texto de prueba")
+
+tests/test_proveedor_openai.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <app.proveedor_openai.ProveedorOpenAI object at 0x7fe0430b0690>
+descripcion = 'Texto de prueba'
+
+    def __call__(self, descripcion: str) -> str:
+>       raise NotImplementedError("Se implementa después de las pruebas")
+E       NotImplementedError: Se implementa después de las pruebas
+
+app/proveedor_openai.py:13: NotImplementedError
+_______________ test_adaptador_reporta_error_de_red_como_oserror _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fe042396570>
+
+    def test_adaptador_reporta_error_de_red_como_oserror(monkeypatch):
+        import app.proveedor_openai as modulo
+    
+        def sin_red(peticion, timeout):
+            raise URLError("sin conexion")
+    
+        monkeypatch.setattr(modulo, "urlopen", sin_red, raising=False)
+        proveedor = ProveedorOpenAI("clave_de_ejemplo")
+        with pytest.raises(OSError):
+>           proveedor("Problema en pantalla")
+
+tests/test_proveedor_openai.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <app.proveedor_openai.ProveedorOpenAI object at 0x7fe0430b0a50>
+descripcion = 'Problema en pantalla'
+
+    def __call__(self, descripcion: str) -> str:
+>       raise NotImplementedError("Se implementa después de las pruebas")
+E       NotImplementedError: Se implementa después de las pruebas
+
+app/proveedor_openai.py:13: NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/test_clasificador.py::test_normal_inventario_guarda_sugerencia_y_conserva_pendiente - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_normal_interfaz_guarda_categoria_del_proveedor - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_normal_ventas_y_normaliza_espacios_y_mayusculas - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_limite_categoria_otro_es_valida_y_no_se_reinterpreta - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_limite_descripcion_de_500_caracteres_aceptada - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_limite_descripcion_de_501_caracteres_rechazada_sin_llamar_ia - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_error_proveedor_no_disponible_conserva_reporte_sin_categoria - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_error_categoria_invalida_se_rechaza_en_vez_de_convertirla_a_otro - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_error_incidencia_inexistente_no_llama_al_modelo - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_error_descripcion_vacia_no_llama_al_modelo - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_clasificador.py::test_reclasificacion_fallida_no_borra_categoria_ya_guardada - NotImplementedError: Primero se escriben las pruebas (TDD rojo)
+FAILED tests/test_proveedor_openai.py::test_adaptador_extrae_categoria_de_respuesta_openai - NotImplementedError: Se implementa después de las pruebas
+FAILED tests/test_proveedor_openai.py::test_adaptador_rechaza_respuesta_sin_texto - NotImplementedError: Se implementa después de las pruebas
+FAILED tests/test_proveedor_openai.py::test_adaptador_reporta_error_de_red_como_oserror - NotImplementedError: Se implementa después de las pruebas
+14 failed in 0.12s
+
+Código de salida: 1 (esperado: distinto de 0 en fase TDD roja)

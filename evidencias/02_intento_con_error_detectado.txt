@@ -1,0 +1,18 @@
+.......F......                                                           [100%]
+=================================== FAILURES ===================================
+____ test_error_categoria_invalida_se_rechaza_en_vez_de_convertirla_a_otro _____
+
+    def test_error_categoria_invalida_se_rechaza_en_vez_de_convertirla_a_otro():
+        incidencias = reporte()
+        resultado = clasificar_incidencia(incidencias, "INC-001", lambda _: "Urgente")
+>       assert resultado.categoria_sugerida is None
+E       AssertionError: assert 'Otro' is None
+E        +  where 'Otro' = ResultadoClasificacion(codigo='INC-001', categoria_sugerida='Otro', mensaje='Categoría sugerida; pendiente de revisión').categoria_sugerida
+
+tests/test_clasificador.py:78: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_clasificador.py::test_error_categoria_invalida_se_rechaza_en_vez_de_convertirla_a_otro - AssertionError: assert 'Otro' is None
+ +  where 'Otro' = ResultadoClasificacion(codigo='INC-001', categoria_sugerida='Otro', mensaje='Categoría sugerida; pendiente de revisión').categoria_sugerida
+1 failed, 13 passed in 0.08s
+
+Código de salida: 1 (fallo detectado antes de aceptar implementación)
