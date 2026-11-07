@@ -1,0 +1,17 @@
+# Archivos temporales de Python y pytest
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+# Entornos locales y secretos
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+# IDE y sistemas operativos
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
