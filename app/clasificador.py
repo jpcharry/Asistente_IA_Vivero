@@ -25,6 +25,21 @@ class ErrorProveedorIA(RuntimeError):
     """El servicio de IA respondió con un formato inservible."""
 
 
+CATEGORIAS_PERMITIDAS = {
+    "inventario": "Inventario",
+    "ventas": "Ventas",
+    "interfaz": "Interfaz",
+    "otro": "Otro",
+}
+
+
+def _categoria_valida(respuesta: object) -> str | None:
+    """Normaliza únicamente etiquetas del catálogo aprobado."""
+    if not isinstance(respuesta, str):
+        return None
+    return CATEGORIAS_PERMITIDAS.get(respuesta.strip().casefold())
+
+
 def clasificar_incidencia(
     incidencias: dict[str, Incidencia],
     codigo: str,
@@ -43,19 +58,8 @@ def clasificar_incidencia(
             codigo, None, "No fue posible clasificar; intente de nuevo"
         )
 
-    if not isinstance(respuesta, str):
-        return ResultadoClasificacion(codigo, None, "La IA devolvió una categoría no permitida")
-
-    categoria_texto = respuesta.strip().casefold()
-    if categoria_texto == "inventario":
-        categoria = "Inventario"
-    elif categoria_texto == "ventas":
-        categoria = "Ventas"
-    elif categoria_texto == "interfaz":
-        categoria = "Interfaz"
-    elif categoria_texto == "otro":
-        categoria = "Otro"
-    else:
+    categoria = _categoria_valida(respuesta)
+    if categoria is None:
         return ResultadoClasificacion(
             codigo, None, "La IA devolvió una categoría no permitida"
         )
