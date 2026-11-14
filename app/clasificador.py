@@ -65,4 +65,8 @@ def clasificar_incidencia(
         )
 
     incidencias[codigo] = replace(incidencia, categoria_sugerida=categoria)
-    return ResultadoClasificacion(codigo, categoria, "Categoría sugerida; pendiente de revisión")
+    return ResultadoClasificacion(
+    codigo,
+    categoria,
+    "Categoría sugerida; pendiente de revisión",
+)

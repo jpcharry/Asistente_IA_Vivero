@@ -14,7 +14,10 @@ def test_normal_inventario_guarda_sugerencia_y_conserva_pendiente():
     assert resultado.categoria_sugerida == "Inventario"
     assert incidencias["INC-001"].categoria_sugerida == "Inventario"
     assert incidencias["INC-001"].estado == "PENDIENTE_REVISION"
-    assert incidencias["INC-001"].descripcion == "El sistema muestra 60 plantas y hay 48"
+    assert (
+    incidencias["INC-001"].descripcion
+    == "El sistema muestra 60 plantas y hay 48"
+)
 
 
 def test_normal_interfaz_guarda_categoria_del_proveedor():

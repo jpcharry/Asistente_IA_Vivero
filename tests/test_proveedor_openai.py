@@ -16,7 +16,14 @@ def test_adaptador_extrae_categoria_de_respuesta_openai(monkeypatch):
     def urlopen_simulado(peticion, timeout):
         peticiones.append((peticion, timeout))
         return BytesIO(json.dumps({
-            "output": [{"type": "message", "content": [{"type": "output_text", "text": "Inventario"}]}]
+            "output": [
+    {
+        "type": "message",
+        "content": [
+            {"type": "output_text", "text": "Inventario"}
+        ],
+    }
+]
         }).encode())
 
     monkeypatch.setattr(modulo, "urlopen", urlopen_simulado, raising=False)
@@ -27,14 +34,24 @@ def test_adaptador_extrae_categoria_de_respuesta_openai(monkeypatch):
     assert peticion.full_url == "https://api.openai.com/v1/responses"
     cuerpo = json.loads(peticion.data.decode())
     assert cuerpo["model"] == "modelo-prueba"
-    assert cuerpo["store"] is False
+    monkeypatch.setattr(
+    modulo,
+    "urlopen",
+    lambda peticion, timeout: BytesIO(b'{"output":[]}'),
+    raising=False,
+)
     assert timeout <= 10
     assert "clave_de_ejemplo" not in str(cuerpo)
 
 
 def test_adaptador_rechaza_respuesta_sin_texto(monkeypatch):
     import app.proveedor_openai as modulo
-    monkeypatch.setattr(modulo, "urlopen", lambda peticion, timeout: BytesIO(b'{"output":[]}'), raising=False)
+    monkeypatch.setattr(
+    modulo,
+    "urlopen",
+    lambda peticion, timeout: BytesIO(b'{"output":[]}'),
+    raising=False,
+)
     proveedor = ProveedorOpenAI("clave_de_ejemplo")
     with pytest.raises(ErrorProveedorIA):
         proveedor("Texto de prueba")

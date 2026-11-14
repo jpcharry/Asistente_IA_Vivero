@@ -1,4 +1,7 @@
-"""Adaptador opcional de la Responses API; el contrato principal no depende de la red."""
+"""Adaptador opcional de la Responses API.
+
+El contrato principal no depende de la red.
+"""
 import json
 from urllib.request import Request, urlopen
 
@@ -39,7 +42,8 @@ class ProveedorOpenAI:
             },
             method="POST",
         )
-        with urlopen(solicitud, timeout=10) as respuesta_http:
+        # S310: URL HTTPS fija, no proporcionada por el usuario.
+        with urlopen(solicitud, timeout=10) as respuesta_http:  # noqa: S310
             try:
                 respuesta_json = json.load(respuesta_http)
             except (ValueError, UnicodeDecodeError) as exc:
