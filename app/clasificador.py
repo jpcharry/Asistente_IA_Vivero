@@ -1,13 +1,16 @@
-"""HU-03: sugerir la categoría de una incidencia y conservarla para revisión.
+"""HU-03: sugerir una categoría de incidencia y dejarla para revisión.
 
-La fuente de la clasificación es inyectable para comprobar el contrato sin red.
+Se inyecta el clasificador para probar la función sin conexión a Internet.
 """
+
 from collections.abc import Callable
 from dataclasses import dataclass, replace
 
 
 @dataclass(frozen=True)
 class Incidencia:
+    """Reporte en memoria con código, descripción, sugerencia y estado."""
+
     codigo: str
     descripcion: str
     categoria_sugerida: str | None = None
@@ -16,13 +19,15 @@ class Incidencia:
 
 @dataclass(frozen=True)
 class ResultadoClasificacion:
+    """Resultado que la operación de clasificación devuelve al solicitante."""
+
     codigo: str
     categoria_sugerida: str | None
     mensaje: str
 
 
 class ErrorProveedorIA(RuntimeError):
-    """El servicio de IA respondió con un formato inservible."""
+    """El proveedor de IA respondió con un formato no utilizable."""
 
 
 CATEGORIAS_PERMITIDAS = {
@@ -34,7 +39,7 @@ CATEGORIAS_PERMITIDAS = {
 
 
 def _categoria_valida(respuesta: object) -> str | None:
-    """Normaliza únicamente etiquetas del catálogo aprobado."""
+    """Normaliza una categoría válida o devuelve ``None`` si no coincide."""
     if not isinstance(respuesta, str):
         return None
     return CATEGORIAS_PERMITIDAS.get(respuesta.strip().casefold())
@@ -45,8 +50,16 @@ def clasificar_incidencia(
     codigo: str,
     servicio_ia: Callable[[str], str],
 ) -> ResultadoClasificacion:
-    """Valida un reporte existente y guarda una categoría propuesta por IA."""
-    incidencia = incidencias[codigo]  # La inexistencia debe levantar KeyError.
+    """Clasifica un reporte existente sin modificar existencias del vivero.
+
+    Recibe un diccionario de incidencias, un código y un clasificador.
+    Devuelve una sugerencia con su mensaje, o un error recuperable sin
+    modificar el registro. Conserva el estado pendiente de revisión.
+
+    Lanza ``KeyError`` para códigos inexistentes y ``ValueError`` para
+    descripciones vacías o mayores de 500 caracteres (sin espacios laterales).
+    """
+    incidencia = incidencias[codigo]
     descripcion = incidencia.descripcion.strip()
     if not 1 <= len(descripcion) <= 500:
         raise ValueError("La descripción debe contener entre 1 y 500 caracteres")
@@ -66,7 +79,7 @@ def clasificar_incidencia(
 
     incidencias[codigo] = replace(incidencia, categoria_sugerida=categoria)
     return ResultadoClasificacion(
-    codigo,
-    categoria,
-    "Categoría sugerida; pendiente de revisión",
-)
+        codigo,
+        categoria,
+        "Categoría sugerida; pendiente de revisión",
+    )
