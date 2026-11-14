@@ -1,24 +1,22 @@
-# Asistente de IA para incidencias en inventario de vivero
+# Asistente de IA para clasificar incidencias de inventario de vivero
 
-**Estudiante:** Juan Pablo Charry Herrera  
-**Curso:** Seminario Inteligencia Artificial Aplicada al Ciclo de Vida del Software  
-**Entrega:** Semana 5 · Primera funcionalidad con pruebas y bitácora de IA  
-**Lenguaje:** Python 3.11+ · **Pruebas:** pytest
+**Autor:** Juan Pablo Charry Herrera  
+**Asignatura:** Seminario Inteligencia Artificial Aplicada al Ciclo de Vida del Software  
+**Entrega:** Semana 6 — revisión del primer incremento funcional
 
-## 1. Funcionalidad de la semana 5
+## 1. ¿Qué es el proyecto?
 
-### Historia seleccionada — HU-03 (Must), necesidad N-03
+Prototipo académico que permite recibir una incidencia ya registrada de un vivero y guardar una **categoría sugerida** por un clasificador. Las categorías son **Inventario, Ventas, Interfaz y Otro**. La sugerencia queda en estado `PENDIENTE_REVISION`; ninguna decisión de IA modifica las existencias o las ventas.
 
-> Como empleado del vivero, quiero obtener una categoría inicial sugerida por IA para identificar el área del problema sin clasificarlo manualmente.
+**Historia de usuario HU-03 (Must, necesidad N-03):** Como empleado del vivero, quiero obtener una categoría inicial sugerida por IA para identificar el área del problema sin clasificarlo manualmente.
 
-Criterios Gherkin (del documento de requisitos, semana 3):
+**Criterio normal:** Dado un reporte `INC-001` sobre diferencias entre el conteo físico y las plantas registradas, cuando el clasificador propone `Inventario`, entonces se guarda esa sugerencia y la incidencia permanece pendiente de revisión.
 
-- **Escenario normal:** Dado que INC-001 contiene «El sistema muestra 60 plantas, pero el conteo físico es 48», cuando se solicita clasificar el reporte, entonces el asistente devuelve «Inventario» y guarda esa sugerencia inicial en INC-001.
-- **Escenario de error:** Dado que INC-003 existe y el servicio clasificador no responde, cuando se solicita la clasificación, entonces INC-003 conserva el reporte, queda sin categoría sugerida y se muestra «No fue posible clasificar; intente de nuevo».
+**Criterio de error:** Dado que `INC-003` existe, cuando el servicio no responde, entonces la incidencia se conserva sin nueva clasificación y se informa que es necesario reintentar.
 
-**Alcance de este corte:** clasificar un reporte existente, validar la categoría, guardar la sugerencia en un repositorio **en memoria** y conservar el estado `PENDIENTE_REVISION`. El módulo no cambia existencias, ventas ni prioridades, y no reemplaza la revisión humana. Una base de datos persistente queda fuera de esta primera función.
+**Alcance:** un módulo Python con incidencias guardadas en un diccionario en memoria, un proveedor de IA opcional y pruebas automatizadas. No incluye base de datos, aplicación web, autenticación ni clasificación real medida con datos del vivero.
 
-### Contrato de la función
+### Contrato verificable
 
 ```python
 def clasificar_incidencia(
@@ -29,90 +27,96 @@ def clasificar_incidencia(
     ...
 ```
 
-- **Entrada `incidencias`:** diccionario donde las claves son los códigos de las incidencias (por ejemplo, `INC-001`). Cada `Incidencia` tiene `codigo`, `descripcion`, `categoria_sugerida` y `estado`.
-- **Entrada `codigo`:** identificador de una incidencia existente.
-- **Entrada `servicio_ia`:** función o adaptador que recibe la descripción y devuelve una sola categoría textual. Puede ser una respuesta simulada durante las pruebas o el proveedor real opcional.
-- **Salida:** `ResultadoClasificacion(codigo, categoria_sugerida, mensaje)`.
-- **Efecto permitido:** si la categoría es válida, se **reemplaza solo el registro del diccionario** con una copia que incluye la sugerencia. Su `descripcion` y `estado` se conservan. No hay escritura en bases de datos ni ajuste de inventario.
-- **Categorías válidas:** `Inventario`, `Ventas`, `Interfaz`, `Otro`. Se toleran espacios al inicio/final y diferencias entre mayúsculas/minúsculas; **no** se aceptan categorías fuera del catálogo.
-- **Longitud admitida:** entre **1 y 500 caracteres** de descripción, excluyendo espacios laterales. El máximo corresponde a la condición de 500 caracteres usada para las pruebas de rendimiento propuestas en la semana 3; debe validarse con el cliente.
-- **Incidencia inexistente:** se lanza `KeyError`; no se consulta la IA.
-- **Descripción vacía o de más de 500 caracteres:** se lanza `ValueError`; no se consulta la IA.
-- **Servicio no disponible:** si el proveedor lanza un error de red, tiempo de espera o formato, el registro **no se modifica** y se devuelve una respuesta sin nueva categoría y el mensaje del escenario de error.
-- **Categoría devuelta fuera de catálogo:** se rechaza sin guardar nada y se retorna `La IA devolvió una categoría no permitida`. La respuesta `Urgente` **no** debe convertirse automáticamente en `Otro`.
+Recibe el repositorio en memoria, el identificador del reporte y un clasificador que acepta texto y devuelve una etiqueta. Retorna `ResultadoClasificacion(codigo, categoria_sugerida, mensaje)`. Acepta descripciones de **1 a 500 caracteres** sin contar espacios laterales. Normaliza mayúsculas y espacios de la categoría; rechaza etiquetas desconocidas sin cambiarlas automáticamente a `Otro`. Lanza `KeyError` si el código no existe y `ValueError` si la descripción es inválida. Una falla de red o formato deja la incidencia intacta y devuelve un mensaje de reintento.
 
-Los nombres de clases y los supuestos técnicos son decisiones de implementación de la semana 5; no equivalen a nuevos requisitos validados por el cliente.
-
-### Ejemplos de entrada y salida
-
-| Caso | Entrada | Salida esperada |
+| Ejemplo | Entrada | Resultado esperado |
 |---|---|---|
-| 1. Inventario | `INC-001` con discrepancia de plantas; IA devuelve `Inventario` | `categoria_sugerida="Inventario"`; queda almacenada y en estado pendiente |
-| 2. Interfaz | `INC-002` con error de pantalla; IA devuelve `Interfaz` | `categoria_sugerida="Interfaz"`; queda almacenada |
-| 3. Otro | `INC-005`; IA devuelve `Otro` | `categoria_sugerida="Otro"` sin reinterpretación |
-| 4. Falla del servicio | `INC-003`; IA lanza `TimeoutError` | `categoria_sugerida=None`, mensaje de error; reporte intacto |
-| 5. Respuesta inválida | `INC-001`; IA devuelve `Urgente` | `categoria_sugerida=None`, mensaje de categoría no permitida |
+| Normal 1 | Descripción de conteo erróneo, respuesta `Inventario` | Guarda `Inventario`, mantiene `PENDIENTE_REVISION` |
+| Normal 2 | Problema de pantalla, respuesta `Interfaz` | Guarda `Interfaz` |
+| Límite | Descripción de 500 caracteres, respuesta `Otro` | Admite el texto y guarda `Otro` |
+| Error | Descripción de 501 caracteres | Lanza `ValueError`, no llama a la IA |
+| Error del servicio | `TimeoutError` del proveedor | Conserva el registro y avisa que se reintente |
 
-## 2. Preparación en Windows (PowerShell)
+## 2. Requisitos
+
+- Python **3.11 o superior**, Git y acceso a terminal.
+- Dependencia de pruebas: `pytest==9.2.0` definida en `requirements.txt`.
+- Herramientas de revisión: Ruff y pip-audit (se instalan aparte, no son necesarias para ejecutar la demo).
+- **Opcional:** una clave de API de OpenAI y acceso a Internet para ejecutar `demo_ia_real.py`. La demo local no requiere clave.
+
+## 3. Instalación
+
+Desde una carpeta recién descargada o clonada, en **PowerShell**:
 
 ```powershell
-cd ruta\a\Charry_JuanPablo_S5_AsistenteIA_Vivero
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 ```
 
-Si `py -3` no está disponible, usa `python -m venv .venv`. Si PowerShell bloquea el script, puedes omitir la activación y ejecutar `.\.venv\Scripts\python.exe -m pip install -r requirements.txt` y luego las pruebas con ese mismo ejecutable.
+En Linux/macOS: `python3 -m venv .venv`, `source .venv/bin/activate` y `python -m pip install -r requirements.txt`. Si PowerShell bloquea la activación, usa directamente `.\.venv\Scripts\python.exe -m pip install -r requirements.txt` y el mismo ejecutable en los siguientes comandos.
 
-### Cómo ejecutar las pruebas
+## 4. Ejecución
 
-Desde la **raíz** del proyecto (donde está `requirements.txt`):
-
-```powershell
-python -m pytest -v
-```
-
-Para ejecutar una demostración sin clave de API ni Internet:
+**Demostración local (sin consumo real de IA):**
 
 ```powershell
 python demo.py
 ```
 
-La demo usa una **respuesta simulada**; no prueba que un modelo de IA real acierte la categoría. Los tests automatizados simulan el comportamiento del proveedor y comprueban que la aplicación acepta o rechaza su salida conforme al contrato.
-
-## 3. Proveedor real opcional
-
-El archivo `app/proveedor_openai.py` incluye un adaptador a la **Responses API** por HTTPS usando solo la librería estándar. Esta conexión es opcional y **no se ha ejecutado contra una cuenta real**: requeriría una API key del usuario y puede generar costos. La integración se comprueba con pruebas que simulan HTTP, sin Internet.
-
-En PowerShell (solo en tu equipo, nunca publiques la clave):
+**Demostración opcional con API real** (puede generar cargos y no fue probada con una clave real en esta entrega):
 
 ```powershell
-$env:OPENAI_API_KEY = "TU_API_KEY"
+$env:OPENAI_API_KEY = "TU_CLAVE_PRIVADA"
 $env:OPENAI_MODEL = "gpt-6-luna"
 python demo_ia_real.py
 ```
 
-El nombre del modelo puede ajustarse según los modelos habilitados en tu cuenta. No se envían números de teléfono, contraseñas ni otros datos personales en los ejemplos.
+No publiques la clave ni la almacenes en un commit. `.env.example` solo muestra nombres de variables. La solicitud de red usa una URL fija HTTPS, bloquea redirecciones y limita el tamaño máximo de su respuesta.
 
-## 4. Evidencia TDD y control de versiones
+## 5. Pruebas y revisión de seguridad
 
-El historial de Git contiene, en orden:
+```powershell
+python -m pytest -v
+python -m pip install ruff
+python -m ruff check .
+python -m pip install pip-audit
+python -m pip_audit -r requirements.txt
+```
 
-1. `test: registrar pruebas HU-03 en rojo` — pruebas diseñadas antes de la implementación; la función era un marcador que lanzaba `NotImplementedError`.
-2. `feat: clasificar incidencias y pasar pruebas HU-03` — implementación y pruebas en verde.
-3. `refactor: simplificar normalizacion de categorias` — mejora de estructura sin modificar las pruebas.
-4. `docs: documentar bitacora y verificaciones` — bitácora con decisiones y evidencias.
+Se ejecutaron **18 pruebas en un entorno aislado:** 14 existentes de la semana 5 y 4 nuevas de seguridad (redirección, destino no autorizado, respuesta excesiva e integridad del reporte). Los 18 casos aprobaron. **El linter debe comprobarse de nuevo con Ruff en el equipo local o en GitHub Actions tras publicar estos cambios**; esta revisión no ejecutó Ruff en ese entorno aislado.
 
-Consulta el historial con `git log --oneline --reverse` y las diferencias de cada etapa con `git show <hash>`. Los archivos en `evidencias/` guardan resultados de las ejecuciones. **Las pruebas no se modificaron después del primer commit.**
+La auditoría anterior de GitHub Actions, sobre el commit `c1aab1b`, terminó con `No known vulnerabilities found`; al fijar versiones para semana 6, hay que volver a revisar la ejecución nueva. La auditoría solo evalúa vulnerabilidades **conocidas** en dependencias, no certifica la seguridad general del programa.
 
-## 5. Límites y uso responsable
+Historial TDD de la semana 5: `93b10a4` (pruebas en rojo), `7f877f0` (implementación verde), `cdedb58` (refactor), `977a1a9` (documentación). La semana 6 agrega las pruebas de abuso y el informe `revision_seguridad.md`.
 
-- No se entrenó un modelo con datos reales del vivero ni se midió precisión del proveedor; la clasificación de ejemplo depende de la respuesta simulada o, si se configura, de un servicio externo.
-- `dict` es almacenamiento de demostración y pierde datos al terminar el programa; integración con una base de datos persistente queda para otra semana.
-- Una categoría propuesta por IA siempre queda pendiente de revisión humana. No se modifican existencias.
-- No subas `.env`, claves privadas, contraseñas ni registros reales de clientes. El `.gitignore` evita versionar archivos de entorno comunes.
-- El documento de semana 3 marca las citas de entrevista como simuladas. No se presentan como transcripción verificada ni como requisitos ya validados.
+## 6. Estructura del repositorio
 
-## 6. Entrega
+```text
+app/
+  clasificador.py         Lógica de clasificación y validaciones
+  proveedor_openai.py     Adaptador HTTPS opcional con controles de seguridad
+tests/
+  test_clasificador.py    Comportamientos originales de HU-03
+  test_proveedor_openai.py   Pruebas simuladas del proveedor
+  test_seguridad.py       Nuevas pruebas de abuso, semana 6
+.github/workflows/
+  auditoria.yml           Ruff, pytest y pip-audit en GitHub Actions
+evidencias/              Registros de pruebas y comprobaciones previas
+demo.py                   Ejemplo sin red
+demo_ia_real.py           Ejemplo opcional con API
+pyproject.toml            Reglas E, F, B y S de Ruff
+requirements.txt          Dependencia fijada
+revision_seguridad.md     Informe de revisión de seguridad
+bitacora_ia.md           Decisiones sobre uso de IA
+```
 
-Subir este repositorio a GitHub y pegar la URL en Moodle. Si no se puede usar GitHub, entregar el ZIP **con la carpeta `.git` incluida** para que el docente revise los commits. Consulta `GUIA_ENTREGA.md`.
+`.venv`, `.pytest_cache`, `.ruff_cache`, `__pycache__` y `.env` son archivos de entorno local y no deben subirse al repositorio.
+
+## 7. Uso de inteligencia artificial
+
+Se utilizó ChatGPT como apoyo para el contrato, la propuesta de pruebas, la implementación, la revisión y la refactorización. La **bitácora `bitacora_ia.md`** documenta las decisiones aceptadas, ajustadas y rechazadas, y separa los resultados de pruebas de la precisión real del modelo. En semana 6 se revisó el manejo de redirecciones, el límite de respuestas HTTP y los avisos del linter. **La clasificación automática no se validó con incidencias reales ni con una evaluación de precisión.**
+
+## 8. Autor y licencia
+
+**Juan Pablo Charry Herrera**, proyecto académico de Ingeniería de Software. **Licencia:** sin licencia de reutilización declarada; se reserva la decisión de publicar una licencia posteriormente. El código se conserva para evaluación educativa y las credenciales no se incluyen en el repositorio.

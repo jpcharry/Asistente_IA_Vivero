@@ -1,8 +1,9 @@
 [tool.ruff]
+target-version = "py311"
 line-length = 88
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "S"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*.py" = ["S101"]
+"tests/*.py" = ["S101"] # assert es normal en pytest, no se desactiva en app/

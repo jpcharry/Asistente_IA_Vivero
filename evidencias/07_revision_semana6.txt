@@ -1,0 +1,26 @@
+Registro técnico de revisión — Semana 6 (14/11/2026)
+
+Archivo base inspeccionado: ZIP del repositorio entregado por el estudiante.
+Commit previo a la revisión: c1aab1b.
+
+Pruebas originales: 14 aprobadas (pytest, entorno de verificación).
+Pruebas tras cambios de seguridad: 18 aprobadas (pytest, entorno de verificación).
+Se mantuvieron intactas las 14 pruebas originales.
+
+Auditoría remota previa de GitHub Actions (captura compartida por el estudiante):
+  Run python -m pip_audit -r requirements.txt
+  No known vulnerabilities found
+  Job: Success, 23 s.
+La auditoría debe repetirse con requirements.txt fijado a pytest==9.2.0.
+
+La ejecución de Ruff sin avisos debe comprobarse en el equipo del estudiante o
+con la nueva GitHub Action: en el entorno de revisión utilizado no estaba
+instalada la herramienta Ruff y no se pudo descargar.
+
+Seguridad revisada:
+- La URL de API era fija, pero el cliente HTTP podía seguir redirecciones.
+- La carga de respuesta HTTP no tenía límite de bytes.
+- El README referenciaba demo_ia_real.py, ausente en el ZIP revisado.
+- Las pruebas existentes de pytest usaban assert, apropiado para este marco.
+
+La integración real con una clave API no ha sido ejecutada en esta revisión.
