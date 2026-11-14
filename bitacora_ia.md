@@ -88,3 +88,49 @@ En un próximo trabajo definiría primero más casos inválidos y validaría el 
 - Historial: `git log --oneline --reverse` y `git show <hash>`.
 
 **Límites declarados:** la API de IA real no se ha utilizado con credenciales en este entorno; las 14 pruebas son automatizadas con respuestas controladas. No hay verificación de exactitud de IA frente a incidencias auténticas del vivero, ni base de datos persistente en esta semana.
+
+---
+
+# Semana 6 — Revisión de código y seguridad (14/11/2026)
+
+Estas entradas describen la revisión técnica realizada con asistencia de ChatGPT
+sobre el ZIP del proyecto. El estudiante debe verificar el diff y los resultados
+en su propio repositorio antes de presentar las decisiones como propias.
+
+### Entrada S6-01 — Segunda revisión de seguridad con IA
+
+- **Fecha:** 2026-11-14.
+- **Consulta/sugerencia revisada:** «Examinar `app/clasificador.py`, `app/proveedor_openai.py`, las pruebas y la configuración; comprobar las advertencias Ruff, detectar problemas reales y separar falsos positivos» (síntesis de la solicitud y el intercambio de esta semana).
+- **Decisión:** **Aceptada con ajustes**.
+- **Razón:** Los 31 avisos `S101` son válidos en pytest; el `S310` se había justificado inicialmente por usar una URL fija, pero eso no resolvía redirecciones. Se hizo una comprobación más específica.
+- **Verificación:** se leyó la implementación `urlopen()` y el manejo de redirecciones de `urllib.request`; se identificó que había que bloquear destinos externos. Los archivos del ZIP se contrastaron con la documentación.
+- **Defecto de la IA detectado:** aceptar una anotación `# noqa: S310` sin analizar la posibilidad de redirección era insuficiente.
+- **Corrección:** lista de URL permitida, bloqueo de redirecciones y pruebas nuevas. **Commit:** `21f7b32`.
+
+### Entrada S6-02 — Corrección y pruebas de abuso
+
+- **Fecha:** 2026-11-14.
+- **Prompt/sugerencia:** «Limitar la respuesta de la API a una cantidad controlada de bytes y comprobar que una petición redirigida o una respuesta excesiva no cambie una incidencia».
+- **Decisión:** **Aceptada**.
+- **Razón:** `json.load()` leía sin límite el cuerpo de una respuesta externa; una respuesta descontrolada podía consumir recursos.
+- **Verificación:** se agregaron cuatro pruebas en `tests/test_seguridad.py`, sin modificar las 14 originales. El resultado en el entorno de revisión fue **18 passed**.
+- **Defectos encontrados:** lectura sin límite y ausencia de prueba contra direcciones no autorizadas.
+- **Corrección:** límite de 65.536 bytes y validación del destino fijo. **Commit:** `21f7b32`.
+
+### Entrada S6-03 — Dependencias, README y automatización
+
+- **Fecha:** 2026-11-14.
+- **Prompt/sugerencia:** «Actualizar la documentación con las ocho secciones exigidas, fijar versiones y hacer que GitHub Actions ejecute linter, pruebas y auditoría».
+- **Decisión:** **Aceptada con ajustes**.
+- **Razón:** el `README` anunciaba `demo_ia_real.py`, inexistente en el ZIP; además, pytest no estaba fijado a una versión exacta y la acción original mostraba un aviso de Node.js 20.
+- **Verificación:** se cotejó el listado del ZIP con el README, se inspeccionó `requirements_auditoria.txt` y se observó una ejecución anterior de GitHub Actions con `No known vulnerabilities found` sobre `c1aab1b`.
+- **Corrección:** demo opcional sin secretos, `pytest==9.2.0`, README de ocho secciones y flujo que reúne Ruff, pytest y pip-audit. **Commit:** `1c961da`.
+- **Pendiente de verificar:** repetir el flujo de GitHub Actions con este nuevo commit antes de declarar aprobada la auditoría actualizada.
+
+**Reflexión de semana 6 (6 líneas).**  
+La IA ayudó a ubicar los controles de seguridad más relevantes para el módulo.  
+La revisión recordó que un linter limpio no garantiza un cliente HTTP seguro.  
+El riesgo de redirección obligó a corregir una justificación anterior demasiado rápida.  
+Las nuevas pruebas comprobaron que los errores del proveedor no alteran el reporte.  
+También fue necesario ajustar el README a los archivos realmente presentes.  
+Antes de entregar, debo ejecutar el flujo actualizado en GitHub y revisar sus resultados.

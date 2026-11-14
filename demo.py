@@ -3,6 +3,7 @@ from app.clasificador import Incidencia, clasificar_incidencia
 
 
 def principal() -> None:
+    """Muestra una clasificación simulada sin conectar a Internet."""
     incidencias = {
         "INC-001": Incidencia(
             codigo="INC-001",
